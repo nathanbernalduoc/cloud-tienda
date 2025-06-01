@@ -50,11 +50,7 @@ export class CarroComponent {
 
   quitarCarro(productoId: number): void {
 
-    this.productoService.unsetCarro(productoId).subscribe(
-      response => {
-        console.log("Response "+JSON.stringify(response));
-      }
-    );
+    this.productoService.unsetCarro(productoId);
 
   }
 

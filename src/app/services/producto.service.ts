@@ -8,7 +8,8 @@ import { Observable } from 'rxjs';
 
 export class ProductoService {
 
-  private url = "http://localhost:8081";
+  private url = "https://hw35efgkkd.execute-api.us-east-1.amazonaws.com/desarrollo/";
+  //private url = "http://localhost:8081";
   producto = {}
 
   constructor(private http: HttpClient) { }
