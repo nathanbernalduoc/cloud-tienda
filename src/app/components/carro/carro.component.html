@@ -10,16 +10,10 @@
                     </ul>
                     
                     <form *ngIf="usuarioId || !usuarioId" class="d-flex">
-                        <button class="btn btn-outline-dark" type="button" (click)="goCarro()">
+                        <button class="btn btn-outline-dark" type="button" (click)="goHome()">
                             <i class="bi-cart-fill me-1"></i>
                             Carro
                             <span class="badge bg-dark text-white ms-1 rounded-pill">{{ carro_items }}</span>
-                        </button>
-                    </form>
-                    <form *ngIf="!usuarioId" class="d-flex">
-                        <button type="button" class="btn btn-outline-dark" (click)="login()">
-                            <i class="bi-cart-fill me-1"></i>
-                            Entrar
                         </button>
                     </form>
                 </div>
@@ -39,29 +33,26 @@
             <div class="container px-4 px-lg-5 mt-5">
                 <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
 
-                    <!-- PRODUCTO -->
-                    <div *ngFor="let item of productos | keyvalue" class="col mb-5">
+
+                    <div *ngFor="let item of carro | keyvalue" class="col mb-5">
                         <div class="card h-100">
                             <img class="card-img-top" [src]="item.value['imagenUri']" alt="..." />
 
                             <div class="card-body p-4">
                                 <div class="text-center">
-                                    <!-- Product name-->
                                     <h5 class="fw-bolder">{{ item.value["nombre"] }}</h5>
                                     <i>{{ item.value["descripcion"] }}</i>
-                                    <!-- Product price-->
                                     ${{ item.value["valorVenta"] | number: '1.2-2' }}
                                 </div>
                             </div>
 
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                                 <div class="text-center">
-                                    <button class="btn btn-outline-dark mt-auto" (click)="agregarCarro(item.value['productoId'])" >Agregar al carro</button>
+                                    <button class="btn btn-outline-dark mt-auto" (click)="quitarCarro(item.value['productoId'])" >Quitar del carro</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                     
                 </div>
             </div>
