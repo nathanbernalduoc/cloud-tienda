@@ -36,12 +36,12 @@
 
                     <div *ngFor="let item of carro | keyvalue" class="col mb-5">
                         <div class="card h-100">
-                            <img class="card-img-top" [src]="item.value['imagenUri']" alt="..." />
+                            <img class="card-img-top" [src]="productos[item.value['productoId']]['imagenUri']" alt="..." />
 
                             <div class="card-body p-4">
                                 <div class="text-center">
-                                    <h5 class="fw-bolder">{{ item.value["nombre"] }}</h5>
-                                    <i>{{ item.value["descripcion"] }}</i>
+                                    <h5 class="fw-bolder">{{ productos[item.value["productoId"]]["nombre"] }}</h5>
+                                    <i>{{ productos[item.value["productoId"]]["descripcion"] }}</i>
                                     ${{ item.value["valorVenta"] | number: '1.2-2' }}
                                 </div>
                             </div>
