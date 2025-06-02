@@ -14,6 +14,7 @@
                             <i class="bi-cart-fill me-1"></i>
                             Carro
                             <span class="badge bg-dark text-white ms-1 rounded-pill">{{ carro_items }}</span>
+                            ${{ carro_total | number: '1.0-2' }}
                         </button>
                     </form>
                 </div>
@@ -42,7 +43,7 @@
                                 <div class="text-center">
                                     <h5 class="fw-bolder">{{ productos[item.value["productoId"]]["nombre"] }}</h5>
                                     <i>{{ productos[item.value["productoId"]]["descripcion"] }}</i>
-                                    ${{ item.value["valorVenta"] | number: '1.2-2' }}
+                                    ${{ productos[item.value["productoId"]]["valorVenta"] | number: '1.0-2' }}
                                 </div>
                             </div>
 

@@ -55,7 +55,7 @@ export class CarroComponent {
           console.log("Producto Id "+carro[c]["productoId"]);
           this.getProducto(carro[c]["productoId"]);
           console.log(this.productos);
-
+          
         }
 
       }
@@ -82,10 +82,13 @@ export class CarroComponent {
       p => {
         console.log(p);
 
+        this.carro_total = 0;
         for (const clave of Object.keys(p)) {
           console.log(clave, p[clave]);
           this.productos[p[clave]["productoId"]] = p[clave];
           console.log("Producto "+p[clave]["productoId"]+": "+JSON.stringify(this.productos));
+          this.carro_total+= Number(p[clave]["valorVenta"]);
+
         }
 
       }
