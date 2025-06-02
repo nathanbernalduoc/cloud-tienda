@@ -11,7 +11,7 @@ import { switchMap, catchError } from 'rxjs/operators';
 export class ProductoService {
 
   private url = "https://hw35efgkkd.execute-api.us-east-1.amazonaws.com/desarrollo/";
-  //private url = "http://localhost:8081";
+  // private url = "http://localhost:8081";
   producto = {}
 
   constructor(
@@ -25,7 +25,7 @@ export class ProductoService {
         const token = localStorage.getItem("token");
         if (!token) {
           console.error('No authentication token available');
-          // throw new Error('No authentication token available');
+          throw new Error('No authentication token available');
         }
         return of(new HttpHeaders({
           'Authorization': `Bearer ${token}`,

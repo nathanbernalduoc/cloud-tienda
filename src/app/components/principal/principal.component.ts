@@ -69,6 +69,9 @@ export class PrincipalComponent implements OnInit {
       },
       error => {
         console.log("Se ha producido un error\nApi Recover error: "+error.message+" / "+error.status);
+        if (error.message && error.message.includes('No authentication token available')) {
+          this.login();
+        }
       },
       () => { console.log('Ending!'); }
     );
@@ -76,6 +79,13 @@ export class PrincipalComponent implements OnInit {
   }
 
   agregarCarro(productoId: number): void {
+    // Check if user is authenticated
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.log("No authentication token found, redirecting to login");
+      this.login();
+      return;
+    }
 
     console.log("Agregando producto "+productoId);
 
@@ -112,6 +122,13 @@ export class PrincipalComponent implements OnInit {
         console.log(JSON.stringify(carro));
         this.carro = carro;
         this.carro_items = Object.keys(this.carro).length;
+      },
+      error => {
+        if (error && error.message && error.message.includes('No authentication token available')) {
+          this.login();
+        } else {
+          console.log("Error getting cart: ", error);
+        }
       }
     );
 
@@ -136,6 +153,13 @@ export class PrincipalComponent implements OnInit {
   }
 
   goCarro(): void {
+    // Check if user is authenticated
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.log("No authentication token found, redirecting to login");
+      this.login();
+      return;
+    }
 
     console.log("Navegando a carro")
     this.router.navigate(['/carro']);

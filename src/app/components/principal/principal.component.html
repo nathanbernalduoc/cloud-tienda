@@ -63,7 +63,11 @@
 
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                                 <div class="text-center">
-                                    <button class="btn btn-outline-dark mt-auto" (click)="agregarCarro(item.value['productoId'])" >Agregar al carro</button>
+                                    <button class="btn btn-outline-dark mt-auto"
+                                            (click)="agregarCarro(item.value['productoId'])"
+                                            [title]="!userEmail ? 'Debes iniciar sesión para agregar al carro' : 'Agregar al carro'">
+                                        {{ !userEmail ? 'Iniciar sesión para comprar' : 'Agregar al carro' }}
+                                    </button>
                                 </div>
                             </div>
                         </div>

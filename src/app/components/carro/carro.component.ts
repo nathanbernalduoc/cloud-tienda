@@ -5,6 +5,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MsalService } from '@azure/msal-angular';
 
 @Component({
   selector: 'app-carro',
@@ -22,7 +23,16 @@ export class CarroComponent {
   constructor(
     private router: Router,
     private productoService: ProductoService,
+    private msalService: MsalService,
   ) {
+    // Check if user is authenticated
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.log("No authentication token found, redirecting to principal");
+      this.router.navigate(['/principal']);
+      return;
+    }
+
     this.usuarioId = JSON.parse(localStorage.getItem("usuarioId") || "0");
     this.getCarro(1);
   }
