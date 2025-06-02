@@ -1,0 +1,33 @@
+# Dependencies
+node_modules
+npm-debug.log
+
+# IDE
+.idea
+.vscode
+*.sublime-*
+*.code-workspace
+
+# Misc
+.git
+.gitignore
+README.md
+.editorconfig
+.DS_Store
+Thumbs.db
+
+# Angular
+.angular
+dist
+tmp
+out-tsc
+
+# Tests
+e2e
+coverage
+*.spec.ts
+karma.conf.js
+
+# Documentation
+docs
+*.md
