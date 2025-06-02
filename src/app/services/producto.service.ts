@@ -10,8 +10,8 @@ import { switchMap, catchError } from 'rxjs/operators';
 
 export class ProductoService {
 
-  //private url = "https://hw35efgkkd.execute-api.us-east-1.amazonaws.com/desarrollo/";
-   private url = "http://localhost:8081";
+  private url = "https://hw35efgkkd.execute-api.us-east-1.amazonaws.com/desarrollo/";
+  // private url = "http://localhost:8081";
   producto = {}
 
   constructor(
@@ -50,7 +50,7 @@ export class ProductoService {
     console.log("Accediendo endpoint: "+this.url+"/producto/"+productoId);
     return this.getHeaders().pipe(
       switchMap(
-        headers => 
+        headers =>
           this.http.get(this.url+"/producto/"+productoId, { headers })
       )
     );

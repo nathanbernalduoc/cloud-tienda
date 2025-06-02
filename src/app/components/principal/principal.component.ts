@@ -141,7 +141,7 @@ export class PrincipalComponent implements OnInit {
         this.msalService.instance.setActiveAccount(result.account);
         this.setUserFromAccount(result.account);
         this.router.navigate(["/principal"]);
-        localStorage.setItem("token", result.idToken);
+        localStorage.setItem("token", result.accessToken);
         localStorage.setItem("username", result.account.username);
         // inserción de usuario
       }

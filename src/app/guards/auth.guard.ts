@@ -23,18 +23,16 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    // If no token, trigger login popup
     return this.msalService.loginPopup(loginRequest).pipe(
       map((result: AuthenticationResult) => {
         if (result && result.account) {
           this.msalService.instance.setActiveAccount(result.account);
-          localStorage.setItem("token", result.idToken);
+          localStorage.setItem("token", result.accessToken);
           return true;
         }
         return false;
       }),
       catchError(() => {
-        // If login fails or is cancelled, redirect to principal
         this.router.navigate(['/principal']);
         return of(false);
       })
