@@ -33,7 +33,7 @@ export class PrincipalComponent implements OnInit {
   ) {
     this.getProducto();
     this.usuarioId = JSON.parse(localStorage.getItem("usuarioId") || "0");
-    this.getCarro(1);
+    this.getCarro(localStorage.getItem("username") || "");
   }
 
   ngOnInit(): void {
@@ -64,7 +64,7 @@ export class PrincipalComponent implements OnInit {
 
     this.productoService.getProducto().subscribe(
       producto => {
-        console.log("Recuperando foros 2 "+JSON.stringify(producto));
+        console.log("Recuperando productos "+JSON.stringify(producto));
         this.productos = producto;
       },
       error => {
@@ -92,7 +92,7 @@ export class PrincipalComponent implements OnInit {
     this.carro = {
       carroId: null,
       productoId: productoId,
-      usuarioId: 1,
+      usuarioId: localStorage.getItem("username") || "",
       cantidad: 1,
       registroFecha: Date.now,
       vigenciaFlag: 1
@@ -101,7 +101,7 @@ export class PrincipalComponent implements OnInit {
     this.productoService.setCarro(this.carro).subscribe(
       response => {
         console.log("Producto agregado "+response);
-        this.getCarro(1);
+        this.getCarro(localStorage.getItem("username") || "");
       },
       error => {
         console.log("Se ha producido un problema al intentar agregar producto.");
@@ -113,7 +113,7 @@ export class PrincipalComponent implements OnInit {
 
   }
 
-  getCarro(usuarioId: number): void {
+  getCarro(usuarioId: String): void {
 
     console.log("Usuario "+this.usuarioId+" "+usuarioId);
 
@@ -137,10 +137,13 @@ export class PrincipalComponent implements OnInit {
   login(): void {
     this.msalService.loginPopup(loginRequest).subscribe((result: AuthenticationResult) => {
       if (result && result.account) {
+        console.log(result);
         this.msalService.instance.setActiveAccount(result.account);
         this.setUserFromAccount(result.account);
         this.router.navigate(["/principal"]);
         localStorage.setItem("token", result.idToken);
+        localStorage.setItem("username", result.account.username);
+        // inserción de usuario
       }
     });
   }

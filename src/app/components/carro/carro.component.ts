@@ -17,8 +17,11 @@ import { MsalService } from '@azure/msal-angular';
 export class CarroComponent {
 
   carro = {};
+  producto = {};
+  productos: any = new Array();
   usuarioId: number = 0;
   carro_items: number = 0;
+  carro_total: number = 0;
 
   constructor(
     private router: Router,
@@ -34,18 +37,27 @@ export class CarroComponent {
     }
 
     this.usuarioId = JSON.parse(localStorage.getItem("usuarioId") || "0");
-    this.getCarro(1);
+    this.getCarro(localStorage.getItem("username") || "");
   }
 
-  getCarro(usuarioId: number): void {
+  getCarro(usuarioId: String): void {
 
     console.log("Usuario "+this.usuarioId+" "+usuarioId);
 
     this.productoService.getCarro(usuarioId).subscribe(
       carro => {
-        console.log(JSON.stringify(carro));
+        console.log("CARRO "+JSON.stringify(carro));
         this.carro = carro;
         this.carro_items = Object.keys(this.carro).length;
+
+        for (const c in Object.keys(carro)) {
+          console.log(carro[c]);
+          console.log("Producto Id "+carro[c]["productoId"]);
+          this.getProducto(carro[c]["productoId"]);
+          console.log(this.productos);
+          
+        }
+
       }
     );
 
@@ -61,6 +73,26 @@ export class CarroComponent {
   quitarCarro(productoId: number): void {
 
     this.productoService.unsetCarro(productoId);
+
+  }
+
+  getProducto(productoId: String): any {
+
+    this.productoService.getProducto().subscribe(
+      p => {
+        console.log(p);
+
+        this.carro_total = 0;
+        for (const clave of Object.keys(p)) {
+          console.log(clave, p[clave]);
+          this.productos[p[clave]["productoId"]] = p[clave];
+          console.log("Producto "+p[clave]["productoId"]+": "+JSON.stringify(this.productos));
+          this.carro_total+= Number(p[clave]["valorVenta"]);
+
+        }
+
+      }
+    );
 
   }
 

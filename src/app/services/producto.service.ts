@@ -10,8 +10,8 @@ import { switchMap, catchError } from 'rxjs/operators';
 
 export class ProductoService {
 
-  private url = "https://hw35efgkkd.execute-api.us-east-1.amazonaws.com/desarrollo/";
-  // private url = "http://localhost:8081";
+  //private url = "https://hw35efgkkd.execute-api.us-east-1.amazonaws.com/desarrollo/";
+   private url = "http://localhost:8081";
   producto = {}
 
   constructor(
@@ -46,12 +46,23 @@ export class ProductoService {
     );
   }
 
-  getCarro(usuarioId: number): Observable<any> {
+  getProductoId(productoId: number): Observable<any> {
+    console.log("Accediendo endpoint: "+this.url+"/producto/"+productoId);
+    return this.getHeaders().pipe(
+      switchMap(
+        headers => 
+          this.http.get(this.url+"/producto/"+productoId, { headers })
+      )
+    );
+  }
+
+  getCarro(usuarioId: String): Observable<any> {
     console.log("recuperando carro: "+this.url+"\n"+usuarioId);
     var uri = this.url+"/carro/"+usuarioId;
     console.log("Uri "+uri);
     return this.getHeaders().pipe(
-      switchMap(headers => this.http.get(uri, { headers }))
+      switchMap(
+        headers => this.http.get(uri, { headers }))
     );
   }
 
