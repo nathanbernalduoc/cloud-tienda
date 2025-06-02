@@ -4,7 +4,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-// MSAL imports
 import { MsalService } from '@azure/msal-angular';
 import { EventMessage, EventType, AccountInfo, AuthenticationResult } from '@azure/msal-browser';
 import { loginRequest } from '../../auth-config';
@@ -25,7 +24,6 @@ export class PrincipalComponent implements OnInit {
   usuarioId: number = 0;
   carro_items: number = 0;
 
-  /** Email of the logged-in user (undefined when not authenticated) */
   userEmail?: string;
 
   constructor(
@@ -33,25 +31,20 @@ export class PrincipalComponent implements OnInit {
     private productoService: ProductoService,
     private msalService: MsalService,
   ) {
-    // Retrieve products and cart
     this.getProducto();
     this.usuarioId = JSON.parse(localStorage.getItem("usuarioId") || "0");
     this.getCarro(1);
   }
 
   ngOnInit(): void {
-    // Initialize MSAL instance before accessing accounts
     this.msalService.initialize().subscribe(() => {
-      // Determine existing account on app init
       this.setUserFromAccount(this.msalService.instance.getActiveAccount() || this.msalService.instance.getAllAccounts()[0]);
 
-      // Listen for MSAL login/logout events
       this.msalService.instance.addEventCallback((event: EventMessage) => {
         if (event.eventType === EventType.LOGIN_SUCCESS && event.payload && (event.payload as any).account) {
           const account = (event.payload as any).account as AccountInfo;
           this.msalService.instance.setActiveAccount(account);
           this.setUserFromAccount(account);
-          // Redirect to home (principal)
           this.router.navigate(["/principal"]);
         }
 
@@ -63,7 +56,6 @@ export class PrincipalComponent implements OnInit {
     });
   }
 
-  /** Helper to set local user email */
   private setUserFromAccount(account?: AccountInfo) {
     this.userEmail = account ? account.username : undefined;
   }
@@ -125,14 +117,13 @@ export class PrincipalComponent implements OnInit {
 
   }
 
-  // ---------- Authentication methods ----------
-
   login(): void {
     this.msalService.loginPopup(loginRequest).subscribe((result: AuthenticationResult) => {
       if (result && result.account) {
         this.msalService.instance.setActiveAccount(result.account);
         this.setUserFromAccount(result.account);
         this.router.navigate(["/principal"]);
+        localStorage.setItem("token", result.idToken);
       }
     });
   }
@@ -140,6 +131,7 @@ export class PrincipalComponent implements OnInit {
   logout(): void {
     this.msalService.logoutPopup().subscribe(() => {
       this.setUserFromAccount(undefined);
+      localStorage.removeItem("token");
     });
   }
 
