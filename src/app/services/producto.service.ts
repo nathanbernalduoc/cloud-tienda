@@ -11,7 +11,7 @@ import { switchMap, catchError } from 'rxjs/operators';
 export class ProductoService {
 
   private url = "https://hw35efgkkd.execute-api.us-east-1.amazonaws.com/desarrollo/";
-  // private url = "http://localhost:8081";
+  // private url = "http://localhost:8080";
   producto = {}
 
   constructor(

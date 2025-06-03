@@ -27,7 +27,7 @@ export class AuthGuard implements CanActivate {
       map((result: AuthenticationResult) => {
         if (result && result.account) {
           this.msalService.instance.setActiveAccount(result.account);
-          localStorage.setItem("token", result.accessToken);
+          localStorage.setItem("token", result.idToken);
           return true;
         }
         return false;
