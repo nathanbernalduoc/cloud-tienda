@@ -7,6 +7,10 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MsalService } from '@azure/msal-angular';
 
+import { ElementRef, ViewChild } from '@angular/core';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
+
 @Component({
   selector: 'app-carro',
   imports: [ CommonModule, ReactiveFormsModule, HttpClientModule],
@@ -16,12 +20,16 @@ import { MsalService } from '@azure/msal-angular';
 })
 export class CarroComponent {
 
+  @ViewChild('ticket.html', { static: false }) content!: ElementRef;
+
   carro = {};
   producto = {};
   productos: any = new Array();
   usuarioId: number = 0;
   carro_items: number = 0;
   carro_total: number = 0;
+  ticket_numero: String = "";
+  usuario_alias: String = "";
 
   constructor(
     private router: Router,
@@ -65,9 +73,38 @@ export class CarroComponent {
 
   goHome(): void {
 
-    console.log("Volviendo a principal")
+    console.log("Volviendo a principal");
     this.router.navigate(['/principal']);
 
+  }
+
+  goPrint(): void {
+
+    console.log("Volviendo a principal");
+    alert('Imprimiendo');
+
+    this.usuario_alias = localStorage.getItem("username") || "Indefinido";
+    this.ticket_numero = "321";
+    this.generatePDF();
+
+  }
+
+  generatePDF() {
+    const dataHtml = document.getElementById('ticketContenido');
+    if (dataHtml) {
+      html2canvas(dataHtml).then(
+        canvas => {
+          const imgWidth = 208;
+          const pageHeight = 295;
+          const imgHeight = canvas.height * imgWidth / canvas.width;
+          const contentDataURL = canvas.toDataURL('image/png');
+          let pdf = new jsPDF('p', 'mm', 'a4');
+          let position = 0;
+          pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
+          pdf.save('my-pdf.pdf');
+        }
+      );
+    }
   }
 
   quitarCarro(productoId: number): void {
@@ -86,8 +123,7 @@ export class CarroComponent {
         for (const clave of Object.keys(p)) {
           console.log(clave, p[clave]);
           this.productos[p[clave]["productoId"]] = p[clave];
-          console.log("Producto "+p[clave]["productoId"]+": "+JSON.stringify(this.productos));
-          this.carro_total+= Number(p[clave]["valorVenta"]);
+          console.log("Producto "+p[clave]["productoId"]+" ($"+p[clave]["valorVenta"]+"): "+JSON.stringify(this.productos));
 
         }
 

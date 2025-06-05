@@ -12,7 +12,11 @@
                     <form *ngIf="usuarioId || !usuarioId" class="d-flex">
                         <button class="btn btn-outline-dark" type="button" (click)="goHome()">
                             <i class="bi-cart-fill me-1"></i>
-                            Carro
+                            Volver
+                        </button>
+                        <button class="btn btn-outline-dark" type="button" (click)="goPrint()">
+                            <i class="bi-cart-fill me-1"></i>
+                            Pagar
                             <span class="badge bg-dark text-white ms-1 rounded-pill">{{ carro_items }}</span>
                             ${{ carro_total | number: '1.0-2' }}
                         </button>
@@ -68,3 +72,20 @@
         <script src="js/scripts.js"></script>
 
     </body>
+
+    <div id="ticketContenido" style="margin-left: 30px;">
+        <br>
+        <H1>Boleta #{{ ticket_numero }}</H1>
+        <br>
+        <H1>Cliente: {{ usuario_alias }}</H1>
+        <hr>
+        <div *ngFor="let item of carro | keyvalue" class="col mb-5">
+
+            <div class="text-center">
+                <h5 class="fw-bolder">{{ productos[item.value["productoId"]]["nombre"] }}</h5>
+                <i>{{ productos[item.value["productoId"]]["descripcion"] }}</i>
+                ${{ productos[item.value["productoId"]]["valorVenta"] | number: '1.0-2' }}
+            </div>
+        </div>
+        <hr>
+    </div>
