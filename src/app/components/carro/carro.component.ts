@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { createOperatorSubscriber } from 'rxjs/internal/operators/OperatorSubscriber';
 import { ProductoService } from '../../services/producto.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { defaultUrlMatcher, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MsalService } from '@azure/msal-angular';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { ElementRef, ViewChild } from '@angular/core';
 import { jsPDF } from 'jspdf';
@@ -23,6 +24,7 @@ export class CarroComponent {
 
   @ViewChild('ticket.html', { static: false }) content!: ElementRef;
 
+  htmlString: String = "";
   carro = {};
   producto = {};
   productos: any = new Array();
@@ -102,7 +104,8 @@ export class CarroComponent {
 
   generatePDF() {
 
-    const dataHtml = this.getHtmlContent("tpl/ticket.html"); //document.getElementById('ticketContenido');
+    const dataHtml = document.getElementById('ticketContenido');
+    console.log(dataHtml);
     if (dataHtml) {
       
       this.ticket_numero = Number(this.productoService.getTicketId());

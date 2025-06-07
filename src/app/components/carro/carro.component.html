@@ -75,23 +75,11 @@
 
     <script>
         $(document).ready(
-            alert("ready");
+            function () {
+                alert("ready");
+            }
         );
     </script>
 
-    <div id="ticketContenido" style="margin-left: 30px; display: none;">
-        <br>
-        <H1>Boleta #{{ ticket_numero }}</H1>
-        <br>
-        <H1>Cliente: {{ usuario_alias }}</H1>
-        <hr>
-        <div *ngFor="let item of carro | keyvalue" class="col mb-5">
-
-            <div class="text-center">
-                <h5 class="fw-bolder">{{ productos[item.value["productoId"]]["nombre"] }}</h5>
-                <i>{{ productos[item.value["productoId"]]["descripcion"] }}</i>
-                ${{ productos[item.value["productoId"]]["valorVenta"] | number: '1.0-2' }}
-            </div>
-        </div>
-        <hr>
-    </div>
+    <div id="ticketContenido" [innerHTML]="htmlString"></div>
+    
