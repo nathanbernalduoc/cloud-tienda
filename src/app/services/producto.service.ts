@@ -10,7 +10,7 @@ import { switchMap, catchError } from 'rxjs/operators';
 
 export class ProductoService {
 
-  //private url = "https://hw35efgkkd.execute-api.us-east-1.amazonaws.com/desarrollo/";
+  //private url = "https://hw35efgkkd.execute-api.us-east-1.amazonaws.com/desarrollo";
   //private url = "http://20.110.161.21";
   private url = "http://localhost:8081";
   producto = {}
@@ -88,7 +88,7 @@ export class ProductoService {
 
   getTicketId(): Observable<any> {
     return this.getHeaders().pipe(
-      switchMap(headers => this.http.delete(this.url+"/ticket/gen", { headers }))
+      switchMap(headers => this.http.get(this.url+"/ticket/gen", { headers }))
     );
   }
 

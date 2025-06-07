@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MsalService } from '@azure/msal-angular';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import autoTable from 'jspdf-autotable';
 
 import { ElementRef, ViewChild } from '@angular/core';
 import { jsPDF } from 'jspdf';
@@ -35,22 +36,14 @@ export class CarroComponent {
   ticket_contenido: String = "";
   usuario_alias: String = "";
 
-  async ngOnInit() {
-      try {
-        const response = await fetch('my-file.html');
-        const html = await response.text();
-        this.ticket_contenido = html;
-      } catch (error) {
-        console.error('Error cargando el archivo HTML:', error);
-      }
-  }
-
   constructor(
     private router: Router,
     private productoService: ProductoService,
     private msalService: MsalService,
   ) {
-    // Check if user is authenticated
+
+    this.usuario_alias = localStorage.getItem("username") || "Indefinido";
+
     const token = localStorage.getItem("token");
     if (!token) {
       console.log("No authentication token found, redirecting to principal");
@@ -64,19 +57,20 @@ export class CarroComponent {
 
   getCarro(usuarioId: String): void {
 
-    console.log("Usuario "+this.usuarioId+" "+usuarioId);
+    console.log("[getCarro] Usuario "+this.usuarioId+" / "+usuarioId);
 
     this.productoService.getCarro(usuarioId).subscribe(
       carro => {
-        console.log("CARRO "+JSON.stringify(carro));
+        console.log("[getCarro] - CARRO "+JSON.stringify(carro));
         this.carro = carro;
         this.carro_items = Object.keys(this.carro).length;
 
         for (const c in Object.keys(carro)) {
-          console.log(carro[c]);
-          console.log("Producto Id "+carro[c]["productoId"]);
+
+          console.log("[getCarro] - Carro "+JSON.stringify(carro[c]));
+          const c2 = JSON.stringify(carro[c]);
           this.getProducto(carro[c]["productoId"]);
-          console.log(this.productos);
+          console.log("[getCarro] - Producto "+this.productos);
           
         }
 
@@ -104,23 +98,50 @@ export class CarroComponent {
 
   generatePDF() {
 
-    const dataHtml = document.getElementById('ticketContenido');
-    console.log(dataHtml);
-    if (dataHtml) {
-      
-      this.ticket_numero = Number(this.productoService.getTicketId());
-      
-      html2canvas(dataHtml).then(
-        canvas => {
-          const imgWidth = 208;
-          const pageHeight = 295;
-          const imgHeight = canvas.height * imgWidth / canvas.width;
-          let pdf = new jsPDF('p', 'mm', 'a4');
-          let position = 0;
-          pdf.save('ticket-'+this.ticket_numero+'.pdf');
+    console.log("[genetarePDF] ");
+
+    this.productoService.getTicketId().subscribe(
+      t => {
+
+        const n = t;
+        this.ticket_numero = n.ticketId;
+
+        const doc = new jsPDF();
+
+        console.log("[generatePDF] - Preparando archivo");
+        doc.setFontSize(16);
+        doc.text('Comprobante #'+this.ticket_numero, 10, 10);
+        doc.setFontSize(12);
+        doc.text(
+          'Comprobante de compra, aquí detallamos sus productos:',
+          10,
+          20,
+        );
+
+        const headers = [['#', 'Producto', 'Valor']];
+        
+        console.log("Productos "+JSON.stringify(this.productos));
+
+        let data = [];
+        for(const item of this.productos) {
+          if (item) {
+            data.push([item["productoId"], item["nombre"], "$ "+item["valorVenta"]]);
+          }
         }
-      );
-    }
+
+        data.push(["Total: $ "+this.carro_total]);
+
+        autoTable(doc, {
+          head: headers,
+          body: data,
+          startY: 30, // Adjust the `startY` position as needed.
+        });
+
+        doc.save('ticket-'+this.ticket_numero+'.pdf');
+  
+      }
+    );
+
   }
 
 
@@ -132,17 +153,13 @@ export class CarroComponent {
 
   getProducto(productoId: String): any {
 
-    this.productoService.getProducto().subscribe(
+
+    this.productoService.getProductoId(Number(productoId)).subscribe(
       p => {
-        console.log(p);
 
-        this.carro_total = 0;
-        for (const clave of Object.keys(p)) {
-          console.log(clave, p[clave]);
-          this.productos[p[clave]["productoId"]] = p[clave];
-          console.log("Producto "+p[clave]["productoId"]+" ($"+p[clave]["valorVenta"]+"): "+JSON.stringify(this.productos));
-
-        }
+        console.log("[carro / getProducto] - ",p);
+        this.productos[p["productoId"]] = p;
+        this.carro_total = this.carro_total + p["valorVenta"];
 
       }
     );

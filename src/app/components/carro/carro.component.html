@@ -16,7 +16,7 @@
                         </button>
                         <button class="btn btn-outline-dark" type="button" (click)="goPrint()">
                             <i class="bi-cart-fill me-1"></i>
-                            Pagar
+                            Imprimir ticket
                             <span class="badge bg-dark text-white ms-1 rounded-pill">{{ carro_items }}</span>
                             ${{ carro_total | number: '1.0-2' }}
                         </button>
@@ -81,5 +81,25 @@
         );
     </script>
 
-    <div id="ticketContenido" [innerHTML]="htmlString"></div>
+    
+    <div class="container" id="ticketContenido" style="margin-left: 30px; height: 0px;">
+        <h3>Cobro</h3>
+        <br>
+        <small>(El correlativo se generar&aacute; al momento de emitir la impresi&oacute;n)</small>
+        <H1>Boleta #{{ ticket_numero }}</H1>
+        <br>
+        <H1>Cliente: {{ usuario_alias }}</H1>
+        <hr>    
+        <div *ngFor="let item of carro | keyvalue" class="col mb-5">
+
+            <div class="text-center">
+                <h5 class="fw-bolder">{{ productos[item.value["productoId"]]["nombre"] }}</h5>
+                <i>{{ productos[item.value["productoId"]]["descripcion"] }}</i>
+                ${{ productos[item.value["productoId"]]["valorVenta"] | number: '1.0-2' }}
+            </div>
+
+        </div>
+        <h3>Total ${{carro_total | number: '1.0-2'}}</h3>
+        <hr>
+    </div>
     
