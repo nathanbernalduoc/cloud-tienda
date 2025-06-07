@@ -79,7 +79,7 @@ export class PrincipalComponent implements OnInit {
   }
 
   agregarCarro(productoId: number): void {
-    // Check if user is authenticated
+
     const token = localStorage.getItem("token");
     if (!token) {
       console.log("No authentication token found, redirecting to login");
@@ -95,7 +95,9 @@ export class PrincipalComponent implements OnInit {
       usuarioId: localStorage.getItem("username") || "",
       cantidad: 1,
       registroFecha: Date.now,
-      vigenciaFlag: 1
+      vigenciaFlag: 1,
+      ticketId:null
+
     };
 
     this.productoService.setCarro(this.carro).subscribe(

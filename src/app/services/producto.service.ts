@@ -86,4 +86,14 @@ export class ProductoService {
     );
   }
 
+  getTicketId(): Observable<any> {
+    return this.getHeaders().pipe(
+      switchMap(headers => this.http.delete(this.url+"/ticket/gen", { headers }))
+    );
+  }
+
+  getHtmlContent(url: string): Observable<string> {
+    return this.http.get(url, { responseType: 'text' });
+  }
+
 }

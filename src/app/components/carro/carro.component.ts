@@ -10,6 +10,7 @@ import { MsalService } from '@azure/msal-angular';
 import { ElementRef, ViewChild } from '@angular/core';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-carro',
@@ -28,8 +29,19 @@ export class CarroComponent {
   usuarioId: number = 0;
   carro_items: number = 0;
   carro_total: number = 0;
-  ticket_numero: String = "";
+  ticket_numero: number = 0;
+  ticket_contenido: String = "";
   usuario_alias: String = "";
+
+  async ngOnInit() {
+      try {
+        const response = await fetch('my-file.html');
+        const html = await response.text();
+        this.ticket_contenido = html;
+      } catch (error) {
+        console.error('Error cargando el archivo HTML:', error);
+      }
+  }
 
   constructor(
     private router: Router,
@@ -84,28 +96,30 @@ export class CarroComponent {
     alert('Imprimiendo');
 
     this.usuario_alias = localStorage.getItem("username") || "Indefinido";
-    this.ticket_numero = "321";
     this.generatePDF();
 
   }
 
   generatePDF() {
-    const dataHtml = document.getElementById('ticketContenido');
+
+    const dataHtml = this.getHtmlContent("tpl/ticket.html"); //document.getElementById('ticketContenido');
     if (dataHtml) {
+      
+      this.ticket_numero = Number(this.productoService.getTicketId());
+      
       html2canvas(dataHtml).then(
         canvas => {
           const imgWidth = 208;
           const pageHeight = 295;
           const imgHeight = canvas.height * imgWidth / canvas.width;
-          const contentDataURL = canvas.toDataURL('image/png');
           let pdf = new jsPDF('p', 'mm', 'a4');
           let position = 0;
-          pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
-          pdf.save('my-pdf.pdf');
+          pdf.save('ticket-'+this.ticket_numero+'.pdf');
         }
       );
     }
   }
+
 
   quitarCarro(productoId: number): void {
 
